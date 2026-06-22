@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Map, CalendarDays, Activity, Building2, ChevronLeft, ChevronRight, LogOut } from 'lucide-react'
 import clsx from 'clsx'
+import { usePathname } from 'next/navigation'
 
 const menuItems = [
   {
@@ -30,6 +31,7 @@ const menuItems = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname()
 
   return (
     <aside
@@ -68,7 +70,13 @@ export default function Sidebar() {
               <li key={item.title}>
                 <Link
                   href={item.href}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800"
+                  // className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800"
+                  className={clsx(
+                    'flex items-center gap-3 p-3 rounded-lg transition-all',
+                    pathname === item.href
+                      ? 'bg-green-700 text-white'
+                      : 'hover:bg-gray-800'
+                  )}
                 >
                   <Icon size={20} />
 

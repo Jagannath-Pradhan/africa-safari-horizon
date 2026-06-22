@@ -1,15 +1,20 @@
 import Sidebar from './Sidebar'
+import Header from './Header'
 
 export default function DashboardLayout({
   children,
 }) {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 bg-gray-100 min-h-screen p-6">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col">
+        <Header />
+
+        <main className="flex-1 bg-slate-100 p-6">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }
