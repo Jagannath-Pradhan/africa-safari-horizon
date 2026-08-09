@@ -1,0 +1,61 @@
+// import Destination from '@/models/Destination'
+
+// export async function createDestination(data) {
+//   return await Destination.create(data)
+// }
+
+// export async function getDestinations() {
+//   return await Destination.find().sort({
+//     createdAt: -1,
+//   })
+// }
+
+// export async function getDestinationById(id) {
+//   return await Destination.findById(id)
+// }
+
+// export async function updateDestination(id, data) {
+//   return await Destination.findByIdAndUpdate(
+//     id,
+//     data,
+//     { new: true }
+//   )
+// }
+
+// export async function deleteDestination(id) {
+//   return await Destination.findByIdAndDelete(id)
+// }
+
+
+
+
+import Destination from '@/models/Destination'
+
+export async function createDestination(data) {
+  return Destination.create(data)
+}
+
+export async function getDestinations() {
+  return Destination.find()
+    .sort({ createdAt: -1 })
+    .lean()
+}
+
+export async function getDestinationById(id) {
+  return Destination.findById(id).lean()
+}
+
+export async function updateDestination(id, data) {
+  return Destination.findByIdAndUpdate(
+    id,
+    data,
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).lean()
+}
+
+export async function deleteDestination(id) {
+  return Destination.findByIdAndDelete(id)
+}
