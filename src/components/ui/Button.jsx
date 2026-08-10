@@ -9,7 +9,7 @@ export default function Button({
   return (
     <button
       className={clsx(
-        'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed',
         {
           'bg-green-700 text-white hover:bg-green-800':
             variant === 'primary',
