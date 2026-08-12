@@ -160,6 +160,7 @@ import {
 import PageHeader from '@/components/ui/PageHeader'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
+import DeleteDestinationButton from '@/components/destination/DeleteDestinationButton'
 
 export default async function DestinationsPage() {
   await connectDB()
@@ -238,7 +239,7 @@ export default async function DestinationsPage() {
                         <Badge
                           variant={
                             destination.status ===
-                            'published'
+                              'published'
                               ? 'success'
                               : 'warning'
                           }
@@ -248,15 +249,19 @@ export default async function DestinationsPage() {
                       </td>
 
                       <td className="p-4">
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-2">
                           <Link
                             href={`/dashboard/destinations/${destination._id}/edit`}
-                            className="p-2 rounded-lg hover:bg-gray-100"
+                            className="rounded-lg p-2 hover:bg-gray-100"
+                            title="Edit destination"
                           >
-                            <Pencil
-                              size={18}
-                            />
+                            <Pencil size={18} />
                           </Link>
+
+                          <DeleteDestinationButton
+                            id={destination._id.toString()}
+                            name={destination.name}
+                          />
                         </div>
                       </td>
                     </tr>
