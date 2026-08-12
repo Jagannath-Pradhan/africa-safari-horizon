@@ -35,8 +35,46 @@ export async function createDestination(data) {
   return Destination.create(data)
 }
 
-export async function getDestinations() {
-  return Destination.find()
+// export async function getDestinations() {
+//   return Destination.find()
+//     .sort({ createdAt: -1 })
+//     .lean()
+// }
+
+export async function getDestinations({
+  search = '',
+  status = '',
+} = {}) {
+  const filter = {}
+
+  if (search) {
+    filter.$or = [
+      {
+        name: {
+          $regex: search,
+          $options: 'i',
+        },
+      },
+      {
+        country: {
+          $regex: search,
+          $options: 'i',
+        },
+      },
+      {
+        region: {
+          $regex: search,
+          $options: 'i',
+        },
+      },
+    ]
+  }
+
+  if (status) {
+    filter.status = status
+  }
+
+  return Destination.find(filter)
     .sort({ createdAt: -1 })
     .lean()
 }

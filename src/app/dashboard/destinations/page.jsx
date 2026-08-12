@@ -161,12 +161,20 @@ import PageHeader from '@/components/ui/PageHeader'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import DeleteDestinationButton from '@/components/destination/DeleteDestinationButton'
+import DestinationFilters from '@/components/destination/DestinationFilters'
 
-export default async function DestinationsPage() {
+export default async function DestinationsPage({
+  searchParams
+}) {
+  const params = await searchParams
+
+  const search = params.search || ''
+  const status = params.status || ''
+
   await connectDB()
 
   const destinations =
-    await getDestinations()
+    await getDestinations({ search, status })
 
   return (
     <div>
@@ -176,6 +184,8 @@ export default async function DestinationsPage() {
         buttonText="Add Destination"
         buttonLink="/dashboard/destinations/add"
       />
+
+      <DestinationFilters />
 
       <Card>
         {destinations.length === 0 ? (
