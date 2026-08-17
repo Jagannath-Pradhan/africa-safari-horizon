@@ -41,9 +41,48 @@ export async function createDestination(data) {
 //     .lean()
 // }
 
+// export async function getDestinations({
+//   search = '',
+//   status = '',
+// } = {}) {
+//   const filter = {}
+
+//   if (search) {
+//     filter.$or = [
+//       {
+//         name: {
+//           $regex: search,
+//           $options: 'i',
+//         },
+//       },
+//       {
+//         country: {
+//           $regex: search,
+//           $options: 'i',
+//         },
+//       },
+//       {
+//         region: {
+//           $regex: search,
+//           $options: 'i',
+//         },
+//       },
+//     ]
+//   }
+
+//   if (status) {
+//     filter.status = status
+//   }
+
+//   return Destination.find(filter)
+//     .sort({ createdAt: -1 })
+//     .lean()
+// }
 export async function getDestinations({
   search = '',
   status = '',
+  page = 1,
+  limit = 10,
 } = {}) {
   const filter = {}
 
@@ -74,9 +113,26 @@ export async function getDestinations({
     filter.status = status
   }
 
-  return Destination.find(filter)
-    .sort({ createdAt: -1 })
-    .lean()
+  const skip = (page - 1) * limit
+
+  const [destinations, total] =
+    await Promise.all([
+      Destination.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
+      Destination.countDocuments(filter),
+    ])
+
+  return {
+    destinations,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  }
 }
 
 export async function getDestinationById(id) {

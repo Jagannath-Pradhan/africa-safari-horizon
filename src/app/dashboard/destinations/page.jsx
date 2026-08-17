@@ -162,19 +162,45 @@ import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import DeleteDestinationButton from '@/components/destination/DeleteDestinationButton'
 import DestinationFilters from '@/components/destination/DestinationFilters'
+import Pagination from '@/components/ui/Pagination'
 
+// export default async function DestinationsPage({
+//   searchParams
+// }) {
+//   const params = await searchParams
+
+//   const search = params.search || ''
+//   const status = params.status || ''
+
+//   await connectDB()
 export default async function DestinationsPage({
-  searchParams
+  searchParams,
 }) {
   const params = await searchParams
 
   const search = params.search || ''
   const status = params.status || ''
 
+  const pageNumber = Number(params.page) || 1
+
   await connectDB()
 
-  const destinations =
-    await getDestinations({ search, status })
+  const result = await getDestinations({
+    search,
+    status,
+    page: pageNumber,
+    limit: 10,
+  })
+
+  const {
+    destinations,
+    total,
+    page,
+    totalPages,
+  } = result
+
+  // const destinations =
+  //   await getDestinations({ search, status })
 
   return (
     <div>
@@ -282,6 +308,11 @@ export default async function DestinationsPage({
           </div>
         )}
       </Card>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        searchParams={params}
+      />
     </div>
   )
 }
