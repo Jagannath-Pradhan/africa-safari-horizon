@@ -36,35 +36,48 @@ const destinationSchema = new mongoose.Schema(
       required: true,
     },
 
-    featuredImage: {
-      type: String,
-      default: '',
-    },
-
-    galleryImages: [
-      {
-        type: String,
+      featuredImage: {
+        url: {
+          type: String,
+          default: '',
+        },
+        publicId: {
+          type: String,
+          default: '',
+        },
       },
-    ],
 
-    seoTitle: String,
+      galleryImages: [
+        {
+          url: {
+            type: String,
+            required: true,
+          },
+          publicId: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
 
-    seoDescription: String,
+      seoTitle: String,
 
-    status: {
-      type: String,
-      enum: ['draft', 'published'],
-      default: 'draft',
-    },
+      seoDescription: String,
 
-    featured: {
-      type: Boolean,
-      default: false,
-    },
+      status: {
+        type: String,
+        enum: ['draft', 'published'],
+        default: 'draft',
+      },
+
+      featured: {
+        type: Boolean,
+        default: false,
+      },
   },
   {
     timestamps: true,
   }
 )
 
-export default mongoose.models.Destination ||  mongoose.model('Destination', destinationSchema)
+export default mongoose.models.Destination || mongoose.model('Destination', destinationSchema)
