@@ -193,6 +193,7 @@ import FormInput from '@/components/forms/FormInput'
 import FormTextarea from '@/components/forms/FormTextarea'
 import FormSelect from '@/components/forms/FormSelect'
 import Button from '@/components/ui/Button'
+import ImageUpload from '../forms/ImageUpload'
 
 export default function DestinationForm({
   mode = 'create',
@@ -201,6 +202,8 @@ export default function DestinationForm({
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
+  const [featuredFile, setFeaturedFile] = useState(null)
+  const [galleryFiles, setGalleryFiles] = useState([])
 
   const {
     register,
@@ -312,6 +315,22 @@ export default function DestinationForm({
         {...register('description')}
         error={errors.description?.message}
       />
+
+      <div className="space-y-6">
+        <ImageUpload
+          label="Featured Image"
+          onChange={(files) => {
+            setFeaturedFile(files[0] || null)
+          }}
+        />
+
+        <ImageUpload
+          label="Destination Gallery"
+          multiple
+          maxFiles={10}
+          onChange={setGalleryFiles}
+        />
+      </div>
 
       <FormInput
         label="SEO Title"
