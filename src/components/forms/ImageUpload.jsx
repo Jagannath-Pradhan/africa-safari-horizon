@@ -20,14 +20,25 @@ export default function ImageUpload({
   const inputRef = useRef(null)
   const [files, setFiles] = useState([])
   const [error, setError] = useState('')
+  const filesRef = useRef(files)
+
+  filesRef.current = files
+
+  // useEffect(() => {
+  //   return () => {
+  //     files.forEach((file) => {
+  //       URL.revokeObjectURL(file.preview)
+  //     })
+  //   }
+  // }, [files])
 
   useEffect(() => {
-    return () => {
-      files.forEach((file) => {
-        URL.revokeObjectURL(file.preview)
-      })
-    }
-  }, [files])
+  return () => {
+    filesRef.current.forEach((file) => {
+      URL.revokeObjectURL(file.preview)
+    })
+  }
+}, [])
 
   const handleChange = (event) => {
     const selectedFiles = Array.from(
