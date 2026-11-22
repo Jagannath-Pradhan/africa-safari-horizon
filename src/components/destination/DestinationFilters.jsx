@@ -1,7 +1,11 @@
 'use client'
 
 import { Search, X } from 'lucide-react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function DestinationFilters() {
@@ -9,44 +13,68 @@ export default function DestinationFilters() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const [search, setSearch] = useState(
+  const queryString = searchParams.toString()
+
+  const currentSearch =
     searchParams.get('search') || ''
-  )
 
   const status =
     searchParams.get('status') || ''
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const params = new URLSearchParams(
-        searchParams.toString()
-      )
+  const [search, setSearch] = useState(currentSearch)
 
-      if (search.trim()) {
-        params.set('search', search.trim())
+  // Keep input synchronized with URL changes
+  useEffect(() => {
+    setSearch(currentSearch)
+  }, [currentSearch])
+
+  // Debounced search
+  useEffect(() => {
+    const trimmedSearch = search.trim()
+
+    // Prevent unnecessary navigation
+    if (trimmedSearch === currentSearch) {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(queryString)
+
+      if (trimmedSearch) {
+        params.set('search', trimmedSearch)
       } else {
         params.delete('search')
       }
 
       params.delete('page')
 
-      router.push(
-        `${pathname}?${params.toString()}`
-      )
+      const newQuery = params.toString()
+      const currentQuery = queryString
+
+      // Navigate only when the URL actually changes
+      if (newQuery === currentQuery) {
+        return
+      }
+
+      const url = newQuery
+        ? `${pathname}?${newQuery}`
+        : pathname
+
+      router.replace(url, { scroll: false })
     }, 400)
 
     return () => clearTimeout(timer)
   }, [
     search,
+    currentSearch,
+    queryString,
     pathname,
     router,
-    searchParams,
   ])
 
+  // Status filter
   const handleStatusChange = (value) => {
-    const params = new URLSearchParams(
-      searchParams.toString()
-    )
+    const params = new URLSearchParams(queryString)
 
     if (value) {
       params.set('status', value)
@@ -56,13 +84,19 @@ export default function DestinationFilters() {
 
     params.delete('page')
 
-    router.push(
-      `${pathname}?${params.toString()}`
-    )
+    const newQuery = params.toString()
+
+    const url = newQuery
+      ? `${pathname}?${newQuery}`
+      : pathname
+
+    router.replace(url, { scroll: false })
   }
 
+  // Clear all filters
   const clearFilters = () => {
-    router.push(pathname)
+    setSearch('')
+    router.replace(pathname, { scroll: false })
   }
 
   return (
@@ -91,17 +125,9 @@ export default function DestinationFilters() {
         }
         className="rounded-lg border px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-600"
       >
-        <option value="">
-          All Status
-        </option>
-
-        <option value="published">
-          Published
-        </option>
-
-        <option value="draft">
-          Draft
-        </option>
+        <option value="">All Status</option>
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
       </select>
 
       {(search || status) && (
